@@ -79,7 +79,7 @@ jobs:
       - name: Change value
         run: |
           FILE=./app-helmchart/app-demo/app-demo-value.yaml
-          sed -i 's|  tag: .*|  tag: "${{ steps.build_step.outputs.version }}"|' ${FILE}
+          sed -i 's|  tag: .*|  tag: "'$GITHUB_RUN_ID'"|' ${FILE}
 
       - name: Push app-helmchart
         run: |
