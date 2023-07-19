@@ -61,7 +61,7 @@ jobs:
 
           # Set version fo output2
           echo "Image version: ${VERSION}"
-          echo "::set-output name=version::${VERSION}"
+          echo "::set-output name=version::${GITHUB_RUN_ID}"
       
   replicate-file:
     runs-on: ubuntu-latest
@@ -79,7 +79,7 @@ jobs:
       - name: Change value
         run: |
           FILE=./app-helmchart/app-demo/app-demo-value.yaml
-          sed -i 's|  tag: .*|  tag: "${{ steps.build_step.outputs.build_id }}"|' ${FILE}
+          sed -i 's|  tag: .*|  tag: "${{ steps.build_step.outputs.version }}"|' ${FILE}
 
       - name: Push app-helmchart
         run: |
