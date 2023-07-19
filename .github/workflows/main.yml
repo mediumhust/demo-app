@@ -56,9 +56,35 @@ jobs:
           [ "$VERSION" == "main" ] && VERSION=latest
           echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
-          docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
+          docker tag $IMAGE_NAME $IMAGE_ID:$GITHUB_RUN_ID
           docker push $IMAGE_ID:$GITHUB_RUN_ID
 
           # Set version fo output2
           echo "Image version: ${VERSION}"
           echo "::set-output name=version::${VERSION}"
+      
+  replicate-file:
+    runs-on: ubuntu-latest
+    name: Replicate File
+
+    steps:
+      - name: Checkout app-helmchart
+        uses: actions/checkout@master
+        with: 
+          repository: mediumhust/app-helmchart
+          token: ${{ secrets.GIT_TOKEN }}
+          path: ./app-helmchart
+  
+      - name: Change value
+        run: |
+          FILE=./app-helmchart/app-demo/app-demo-value.yaml
+          sed -i 's|  tag: .*|  tag: "${GITHUB_RUN_ID}"|' ${FILE}
+
+      - name: Push app-helmchart
+        run: |
+          cd ./app-helmchart
+          git add .
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git commit -am "Change image version"
+          git push
