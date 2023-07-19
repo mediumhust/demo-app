@@ -6,7 +6,7 @@ var fs = require('fs'),
     filePath = path.join(__dirname, 'documents/index.html');
 
 app.listen(port, () => {
-    console.log('listening for request on port 8080');
+    console.log('start listening for request on port 8080');
 });
 app.get('/', (req, res) => {
     //console.log('request made');
