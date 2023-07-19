@@ -66,6 +66,7 @@ jobs:
   replicate-file:
     runs-on: ubuntu-latest
     name: Replicate File
+    needs: [push]
 
     steps:
       - name: Checkout app-helmchart
@@ -78,7 +79,7 @@ jobs:
       - name: Change value
         run: |
           FILE=./app-helmchart/app-demo/app-demo-value.yaml
-          sed -i 's|  tag: .*|  tag: "${GITHUB_RUN_ID}"|' ${FILE}
+          sed -i 's|  tag: .*|  tag: ${{needs.push.outputs.version}}|' ${FILE}
 
       - name: Push app-helmchart
         run: |
